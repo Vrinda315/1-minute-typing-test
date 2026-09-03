@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Typing Speed Test</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+background:whitesmoke;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+font-family:Arial;
+color:white;
+}
+.H{
+    font-size:40px;
+    color:#e2b714;
+}
+
+.container{
+width:900px;
+background:#2c2e31;
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 15px rgba(0,0,0,.5);
+border:1px solid #3c4043;
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+#paragraph{
+font-size:24px;
+line-height:40px;
+user-select:none;
+margin-bottom:20px;
+}
+
+.correct{
+color:#00ff55;
+}
+
+.wrong{
+color:red;
+border-radius:3px;
+}
+
+.current{
+border-bottom:2px solid yellow;
+}
+
+textarea{
+width:100%;
+height:120px;
+font-size:22px;
+padding:10px;
+outline:none;
+border:none;
+border-radius:10px;
+}
+
+.info{
+display:flex;
+justify-content:space-between;
+margin-top:20px;
+font-size:20px;
+}
+
+button{
+margin-top:20px;
+padding:12px 25px;
+font-size:18px;
+cursor:pointer;
+border:none;
+border-radius:8px;
+background:#e2b714;
+color:#222;
+font-weight:bold;
+}
+
+button:hover{
+background:#e2b714;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2 class="H">1 Minute Typing Test</h2>
+
+<p id="paragraph"></p>
+
+<textarea id="input" placeholder="Start typing here..."></textarea>
+
+<div class="info">
+<span> ⏱Time : <b id="time">60</b></span>
+<span> ⚡WPM : <b id="wpm">0</b></span>
+<span> 🎯Accuracy : <b id="accuracy">100</b>%</span>
+</div>
+
+<center>
+<button onclick="restart()">Restart</button>
+</center>
+
+</div>
+
+<script>
+
+const text="Learning JavaScript every day improves programming skills and confidence. Building projects like calculators, typing tests, and weather apps helps understand coding concepts better. Practice regularly, write clean code, fix mistakes, and never stop learning. Consistency, patience, and hard work are the keys to becoming a successful web developer and achieving long-term career growth with confidence.";
+const paragraph=document.getElementById("paragraph");
+const input=document.getElementById("input");
+
+let timer=60;
+let started=false;
+let interval;
+
+function loadText(){
+
+paragraph.innerHTML="";
+
+text.split("").forEach((char,index)=>{
+
+let span=document.createElement("span");
+span.innerText=char;
+
+if(index==0)
+span.classList.add("current");
+
+paragraph.appendChild(span);
+
+});
+
+}
+
+loadText();
+
+input.addEventListener("input",function(){
+
+if(!started){
+
+started=true;
+
+interval=setInterval(()=>{
+
+timer--;
+
+time.innerText=timer;
+
+if(timer==0){
+
+clearInterval(interval);
+
+input.disabled=true;
+
+}
+
+},1000);
+
+}
+
+const chars=document.querySelectorAll("#paragraph span");
+
+const typed=input.value.split("");
+
+let correct=0;
+
+chars.forEach((char,index)=>{
+
+char.classList.remove("correct","wrong","current");
+
+if(typed[index]==null){
+
+}
+else if(typed[index]==char.innerText){
+
+char.classList.add("correct");
+correct++;
+
+}
+else{
+
+char.classList.add("wrong");
+
+}
+
+if(index==typed.length){
+
+char.classList.add("current");
+
+}
+
+});
+
+let words=input.value.trim().split(/\s+/).filter(Boolean).length;
+
+let minutes=(60-timer)/60;
+
+let wpm=minutes>0?Math.round(words/minutes):0;
+
+document.getElementById("wpm").innerText=wpm;
+
+let accuracy=Math.round((correct/typed.length)*100);
+
+if(!isFinite(accuracy))
+accuracy=100;
+
+document.getElementById("accuracy").innerText=accuracy;
+
+});
+
+function restart(){
+
+location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
